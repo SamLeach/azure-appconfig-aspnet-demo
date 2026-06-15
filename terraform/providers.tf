@@ -3,8 +3,11 @@ terraform {
 
   required_providers {
     azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      source = "hashicorp/azurerm"
+      # Floor at 4.54.0: the first release that accepts dotnet_version = "10.0"
+      # for azurerm_linux_web_app (PR #31007). It also covers the developer
+      # (>=4.29.0) and premium (>=4.6.0) App Configuration SKUs offered below.
+      version = ">= 4.54.0, < 5.0.0"
     }
     random = {
       source  = "hashicorp/random"

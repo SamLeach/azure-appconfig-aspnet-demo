@@ -8,7 +8,7 @@
 # Deploy the code afterwards, e.g.:
 #   dotnet publish ../src/AppConfigDemo -c Release -o publish
 #   Compress-Archive -Path publish/* -DestinationPath app.zip -Force
-#   az webapp deploy -g <rg> -n <app-name> --src-path app.zip --type zip
+#   az webapp deploy -g <rg> -n $(terraform output -raw web_app_name) --src-path app.zip --type zip
 # ---------------------------------------------------------------------------
 
 resource "azurerm_service_plan" "plan" {
@@ -27,6 +27,7 @@ resource "azurerm_linux_web_app" "app" {
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   service_plan_id     = azurerm_service_plan.plan[0].id
+  https_only          = true # Reject plaintext HTTP (azurerm defaults this to false).
   tags                = var.tags
 
   # Turn on a system-assigned managed identity for this web app.

@@ -9,7 +9,8 @@ publish/
 
 # ---- Terraform ----
 .terraform/
-.terraform.lock.hcl
+# .terraform.lock.hcl is intentionally NOT ignored — commit it (after `terraform init`)
+# so collaborators/CI resolve identical, pinned provider versions.
 *.tfstate
 *.tfstate.*
 crash.log

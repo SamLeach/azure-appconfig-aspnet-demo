@@ -9,7 +9,7 @@ output "app_configuration_endpoint" {
 }
 
 output "app_configuration_connection_string" {
-  description = "Read/write access-key connection string (for the ConnectionString auth method)."
+  description = "Read-only access-key connection string (for the ConnectionString auth method). The demo only reads, so a read-only key is least-privilege; use primary_write_key for write access."
   value       = azurerm_app_configuration.appconfig.primary_read_key[0].connection_string
   sensitive   = true
 }
@@ -22,6 +22,11 @@ output "user_assigned_identity_client_id" {
 output "resource_group_name" {
   description = "Resource group that was created."
   value       = azurerm_resource_group.rg.name
+}
+
+output "web_app_name" {
+  description = "Name of the optional App Service — pass to `az webapp deploy -n` (only when deploy_app_service = true)."
+  value       = var.deploy_app_service ? azurerm_linux_web_app.app[0].name : null
 }
 
 output "web_app_default_hostname" {

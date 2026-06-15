@@ -43,7 +43,10 @@ if (hasConnectionString || hasEndpoint)
     builder.Configuration.AddAzureAppConfiguration(options =>
     {
         // ---- Style (a): access-key connection string --------------------
-        if (appConfigOptions.AuthMethod == AppConfigAuthMethod.ConnectionString)
+        // Gate on hasConnectionString (not just the auth method) so a blank
+        // connection string with an Endpoint set falls through to the Entra ID
+        // path instead of calling Connect("") and crashing at startup.
+        if (hasConnectionString)
         {
             log.LogInformation("Connecting to App Configuration with a connection string (access key).");
             options.Connect(appConfigOptions.ConnectionString);
@@ -59,8 +62,14 @@ if (hasConnectionString || hasEndpoint)
         }
 
         // Only load keys that start with this prefix, and strip it. Optionally
-        // filter by label (e.g. per-environment values).
-        options.Select(keyFilter: "AppConfigDemo:*", labelFilter: appConfigOptions.Label)
+        // filter by label (e.g. per-environment values). A blank label means
+        // "no label" — pass null, since the SDK's no-label selector is null
+        // (LabelFilter.Null), not the empty string.
+        var labelFilter = string.IsNullOrWhiteSpace(appConfigOptions.Label)
+            ? null
+            : appConfigOptions.Label;
+
+        options.Select(keyFilter: "AppConfigDemo:*", labelFilter: labelFilter)
                .TrimKeyPrefix("AppConfigDemo:");
 
         // Dynamic refresh: re-read changed values without restarting. We watch a

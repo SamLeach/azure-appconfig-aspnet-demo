@@ -170,12 +170,13 @@ optional App Service (it comes pre-wired with a system-assigned identity and the
 ```powershell
 cd terraform
 terraform apply -var="deploy_app_service=true"
+$appName = terraform output -raw web_app_name   # capture before leaving the terraform dir
 
 # publish + deploy the code
 cd ../src/AppConfigDemo
 dotnet publish -c Release -o publish
 Compress-Archive -Path publish/* -DestinationPath app.zip -Force
-az webapp deploy -g rg-appconfig-demo -n <app-name-from-output> --src-path app.zip --type zip
+az webapp deploy -g rg-appconfig-demo -n $appName --src-path app.zip --type zip
 ```
 
 The web app is configured with `AppConfig__AuthMethod = SystemAssignedManagedIdentity`,
@@ -207,7 +208,10 @@ terraform destroy
 - Default SKU is `standard`. Use `sku = "free"` for the cheapest option (only one
   free store per subscription). The optional App Service uses a `B1` plan, which
   is **not** free — destroy it when done.
-- The connection string in Terraform outputs is sensitive; it's git-ignored via
-  state files but never commit `terraform.tfstate`.
+- The connection string in Terraform outputs is sensitive; never commit
+  `terraform.tfstate`. Do commit `terraform/.terraform.lock.hcl` after the first
+  `terraform init` so provider versions are pinned/reproducible.
+- Terraform requires **azurerm ≥ 4.54.0** (the first release that accepts the
+  `dotnet_version = "10.0"` App Service stack); this is enforced in `providers.tf`.
 - Built and smoke-tested on .NET 10 (`Microsoft.Azure.AppConfiguration.AspNetCore`
   8.5, `Microsoft.FeatureManagement.AspNetCore` 4.5, `Azure.Identity` 1.21).
