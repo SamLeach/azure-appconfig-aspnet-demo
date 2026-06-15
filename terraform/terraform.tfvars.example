@@ -1,0 +1,11 @@
+# Copy to terraform.tfvars and adjust. terraform.tfvars is git-ignored.
+
+# subscription_id    = "00000000-0000-0000-0000-000000000000"
+location             = "uksouth"
+resource_group_name  = "rg-appconfig-demo"
+name_prefix          = "appconfigdemo"
+sku                  = "standard"   # free | developer | standard | premium
+
+# Set true to also deploy a Linux App Service with a system-assigned managed
+# identity, so you can demo Managed Identity auth end-to-end in Azure.
+deploy_app_service   = false

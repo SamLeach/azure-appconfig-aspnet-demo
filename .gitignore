@@ -1,0 +1,30 @@
+# ---- .NET ----
+bin/
+obj/
+publish/
+*.user
+*.suo
+.vs/
+*.zip
+
+# ---- Terraform ----
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+terraform.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# ---- Secrets / local ----
+*.pfx
+*.pem
+appsettings.Local.json
+.env
