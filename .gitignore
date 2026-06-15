@@ -13,6 +13,9 @@ publish/
 # so collaborators/CI resolve identical, pinned provider versions.
 *.tfstate
 *.tfstate.*
+# Saved plan files can contain sensitive values — never commit them.
+*.tfplan
+tfplan.binary
 crash.log
 crash.*.log
 terraform.tfvars
